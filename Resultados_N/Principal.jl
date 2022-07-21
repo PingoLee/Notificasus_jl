@@ -6,7 +6,6 @@ module Principal
     using DataFrames
     using StringEncodings
     using Dates
-    using DBFTables
     using XLSX
     #using DBFTables
 
@@ -505,42 +504,50 @@ module Principal
                     mes = String[],
                     faixa =  String[],
                     relatorio =  String[],
-                    nu_cnes = String[],
+                    nu_cnes = Int64[],
                     usf =  String[],
                     var =  String[], 
                     valor =  Int64[])
-                    
+        
+  
+        files = readdir("C:\\Bancos\\Outros\\Sisvan\\bruto"; join=true)
 
         # Processa os casos no notifica que não foram laçados da planilha do coe
-        file = "C:\\Bancos\\Outros\\Sisvan\\bruto\\Adolecente - ALTURA X IDADE.xlsx"
-        df = DataFrame(XLSX.readtable(file, 1, "A:Z", header=false, stop_in_empty_row=false)...)
-        
-        fase = df[4, 1]
-        ano = first(chop(fase ,head = 5), 4)
-        mes = chop(fase, head=findlast(':', fase), tail=0)
+        for file in files
+            if occursin(".xlsx", file)
+                df = DataFrame(XLSX.readtable(file, 1, "A:Z", header=false, stop_in_empty_row=false)...)
+                
+                fase = df[4, 1]
+                ano = first(chop(fase ,head = 5), 4)
+                mes = chop(fase, head=findlast(':', fase), tail=0)
 
-        fase = df[5, 1]
-        faixa = strip(chop(fase, head=findlast(':', fase), tail=0))
+                fase = df[5, 1]
+                faixa = strip(chop(fase, head=findlast(':', fase), tail=0))
 
-        rel = df[6, 1]
+                rel = df[7, 1]
 
-        for k = 10:size(df, 1)
-
-            for i = 6:15
-                if ~ismissing(df[8, i])
-                    push!(df1,[
-                        ano,
-                        mes,
-                        faixa,
-                        rel,
-                        df[k, 4],
-                        df[k, 5],
-                        df[8, i],
-                        parse(Int64, df[k, i])])
+                for k = 10:size(df, 1)
+                    if ~ismissing(df[k, 4])
+                        for i = 6:15
+                            if ~ismissing(df[8, i])
+                                push!(df1,[
+                                    ano,
+                                    mes,
+                                    faixa,
+                                    rel,
+                                    df[k, 4],
+                                    df[k, 5],
+                                    df[8, i],
+                                    df[k, i]])
+                            end
+                        end
+                    end
                 end
             end
-
         end
+               
         
+        XLSX.writetable("C:\\Bancos\\Outros\\Sisvan\\proc.xlsx", df1, overwrite=true, sheetname="dados", anchor_cell="A1")
+
     end  
 end
