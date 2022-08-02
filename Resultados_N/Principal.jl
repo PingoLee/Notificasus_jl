@@ -509,44 +509,60 @@ module Principal
                     var =  String[], 
                     valor =  Int64[])
         
-  
-        files = readdir("C:\\Bancos\\Outros\\Sisvan\\bruto"; join=true)
+        
+        paths0 = readdir("C:\\Bancos\\Outros\\Sisvan\\bruto"; join=true)
 
-        # Processa os casos no notifica que não foram laçados da planilha do coe
-        for file in files
-            if occursin(".xlsx", file)
-                df = DataFrame(XLSX.readtable(file, 1, "A:Z", header=false, stop_in_empty_row=false)...)
-                
-                fase = df[4, 1]
-                ano = first(chop(fase ,head = 5), 4)
-                mes = chop(fase, head=findlast(':', fase), tail=0)
+        paths = nothing
 
-                fase = df[5, 1]
-                faixa = strip(chop(fase, head=findlast(':', fase), tail=0))
+        for paths1 in paths0            
+            paths == nothing ? paths = readdir(paths1; join=true) : append!(paths, readdir(paths1; join=true))
+        end
 
-                rel = df[7, 1]
+        for path in paths
+            files = readdir(path; join=true)
 
-                for k = 10:size(df, 1)
-                    if ~ismissing(df[k, 4])
-                        for i = 6:15
-                            if ~ismissing(df[8, i])
-                                push!(df1,[
-                                    ano,
-                                    mes,
-                                    faixa,
-                                    rel,
-                                    df[k, 4],
-                                    df[k, 5],
-                                    df[8, i],
-                                    df[k, i]])
+            # Processa os casos no notifica que não foram laçados da planilha do coe
+            for file in files
+                if occursin(".xlsx", file) || occursin(".xltx", file)
+                    df = DataFrame(XLSX.readtable(file, 1, "A:Z", header=false, stop_in_empty_row=false))
+                    
+                    fase = df[4, 1]
+                    ano = first(chop(fase ,head = 5), 4)
+                    mes = chop(fase, head=findlast(':', fase), tail=0)
+
+                    fase = df[5, 1]
+                    faixa = strip(chop(fase, head=findlast(':', fase), tail=0))
+
+                    rel = df[7, 1]
+
+                    for k = 10:size(df, 1)
+                        if ~ismissing(df[k, 4])
+                            for i = 6:size(df, 2)
+                                if ~ismissing(df[8, i])                                   
+                                    push!(df1,[
+                                        ano,
+                                        mes,
+                                        faixa,
+                                        rel,
+                                        df[k, 4],
+                                        df[k, 5],
+                                        df[8, i],
+                                        df[k, i]])
+                                end
                             end
                         end
                     end
+                else
+                    println(file)
                 end
             end
         end
-               
-        
+
+        replace!(df1.var, "Adequado ou Eutrófico" =>"Adequado", "Altura Adequado" =>"Altura Adequada", "Obesidade (5-10 anos)" => "Obesidade", 
+        "Obesidade grave (5-10 anos)" => "Obesidade Grave", "Sobrepeso (5-10 anos)" => "Sobrepeso")
+
+        filter!([:var] => x -> ~(x == "Total"), df1)
+       
         XLSX.writetable("C:\\Bancos\\Outros\\Sisvan\\proc.xlsx", df1, overwrite=true, sheetname="dados", anchor_cell="A1")
 
     end  
