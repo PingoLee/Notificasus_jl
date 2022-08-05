@@ -45,10 +45,14 @@ end
 
 function Arbo_clicked(w)
   Pergunta = ask_dialog("Você vai inciar o processamento das informações", "De bobs", "Qué não!")
-  if Pergunta == false
-      set_gtk_property!(ent2,:text,"Deu melda")           
-      Gtk.info_dialog(Principal.ZDC())
-      set_gtk_property!(ent2,:text,"Arquivo gerado")
+  if Pergunta == false      
+    try
+      Msg, MsgF = Principal.ZDC()
+      set_gtk_property!(ent3,:text, MsgF)
+      info_dialog(Msg)
+    catch
+      set_gtk_property!(ent3,:text,"Deu melda")
+    end            
   else
       info_dialog("Relaxa, a bagaça foi cancelada")
   end    
