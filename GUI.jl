@@ -3,10 +3,10 @@ include("Resultados_N/Principal.jl")
 include("pacs/fun.jl")
 using .Principal, .fun	
 
-using Gtk
 
 # includet("Resultados_N/Principal.jl")
 # includet("pacs/fun.jl")
+using Gtk
 
 win = GtkWindow("Gerenciador de notificações COVID", 400, 200)
 

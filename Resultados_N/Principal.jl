@@ -16,7 +16,7 @@ module Principal
         # importa o COE
         Local = "C:\\Bancos\\Notificasus\\Covid\\BDs\\Rastreio do notifica\\COECONF.xlsx"
         if isfile(Local)
-            dfCOE = DataFrame(XLSX.readtable(Local, "CONFIRMADOS")...)
+            dfCOE = DataFrame(XLSX.readtable(Local, "CONFIRMADOS"))
         else
             return "A planilha do COE não foi baixada ou não esta com o nome correto", "Erro, não processado"
         end      
@@ -52,7 +52,7 @@ module Principal
           
 
         # importa notifica
-        dfNOT = DataFrame(XLSX.readtable("C:\\Bancos\\Notificasus\\Covid\\BDs\\notifica.xlsx", 1)...)
+        dfNOT = DataFrame(XLSX.readtable("C:\\Bancos\\Notificasus\\Covid\\BDs\\notifica.xlsx", 1))
 
 
         select!(dfNOT, ["num_notificacao", "nome_unidade", "data_notificacao", "cartao_sus", "cpf", "nome_paciente", "idade_anos_dt_notific",
@@ -360,7 +360,7 @@ module Principal
     # Faz o encerramento dos casos gerando o CSV
     function Encerrar()
         # importa notifica
-        dfNOT = DataFrame(XLSX.readtable("C:\\Bancos\\Notificasus\\Covid\\BDs\\notifica.xlsx", 1)...)
+        dfNOT = DataFrame(XLSX.readtable("C:\\Bancos\\Notificasus\\Covid\\BDs\\notifica.xlsx", 1))
 
 
         select!(dfNOT, ["num_notificacao", "nome_unidade", "data_notificacao", "cartao_sus", "cpf", "nome_paciente", "idade_anos_dt_notific",
@@ -375,7 +375,7 @@ module Principal
         dfNOT = filter(["pais", "municipio_paciente"] => (x, y) -> ismissing(x) ? false : contains(string(x), "NULL") & isa(y,String) ? y == "PALMAS - TO" : false , dfNOT)
 
         # carrega dados do cruzamento
-        dfCRUZ = DataFrame(XLSX.readtable("C:\\Bancos\\Notificasus\\Covid\\BDs\\Encerramento\\Cruzamento de dados.xlsx", 1)...)
+        dfCRUZ = DataFrame(XLSX.readtable("C:\\Bancos\\Notificasus\\Covid\\BDs\\Encerramento\\Cruzamento de dados.xlsx", 1))
 
         rename!(dfCRUZ, Dict("LIBERAÇÃO EXAME" => "dt_liberação", "Nº NOTIFICAÇÃO" => "num_notificacao", "Nº REQUISIÇÃO GAL" => "GAL", "Comorbidade / FATOR DE RISCO" => "comorbidade"))
         
@@ -565,4 +565,5 @@ module Principal
         XLSX.writetable("C:\\Bancos\\Outros\\Sisvan\\proc.xlsx", df1, overwrite=true, sheetname="dados", anchor_cell="A1")
 
     end  
+    
 end
