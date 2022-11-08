@@ -1,1 +1,13 @@
-*.toml*
+# OS or Editor folders
+.DS_Store
+.cache
+.project
+.settings
+.tmproj
+nbproject
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.vscode
+.tags*
+.tags
