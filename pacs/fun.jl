@@ -1,5 +1,7 @@
-module Funções
+module fun
     using Dates
+
+    export create_storage_dir
     # Subtrai data
     function  Sub_Mes(date, delta)
         m0 = month(date) + delta
@@ -212,6 +214,22 @@ module Funções
         # Return the computed soundex
         return Buffer
 
+    end
+
+    # Criar diretório
+    function create_storage_dir(name)
+        try
+          mkdir(joinpath(@__DIR__, name)) 
+          if Sys.iswindows()
+            mkdir("C:\\Bancos\\$name")
+          elseif Sys.islinux()
+            mkdir("$(homedir())/$name")
+          end 
+         
+        catch 
+          @warn "directory already exists" 
+        end
+        return joinpath(@__DIR__, name)
     end
 
 end

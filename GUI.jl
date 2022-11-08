@@ -1,7 +1,12 @@
+#using Revise
 include("Resultados_N/Principal.jl")
-include("Funções.jl")
+include("pacs/fun.jl")
+using .Principal, .fun	
+
 using Gtk
-using .Principal, .Funções	
+
+# includet("Resultados_N/Principal.jl")
+# includet("pacs/fun.jl")
 
 win = GtkWindow("Gerenciador de notificações COVID", 400, 200)
 

@@ -1,7 +1,6 @@
-module Principal     
-    path0 = relpath((@__DIR__)*"/..","A:/")    
-    include(path0 * "/Funções.jl")
-    using .Funções
+module Principal        
+    include(joinpath(dirname(Base.active_project()), "pacs" , "fun.jl" ))
+    using .fun
     using CSV
     using DataFrames
     using StringEncodings
@@ -39,7 +38,7 @@ module Principal
 
         for i = 1: nrow(dfCOE)
             if ismissing(dfCOE[i, :DN]) == false && (isa(dfCOE[i, :DN], DateTime) || isa(dfCOE[i, :DN], Date))  && ismissing(dfCOE[i, "NOME"]) == false            
-                dfCOE[i, :metaphone] = string(Funções.MetaPTBR(dfCOE[i, "NOME"], 20), Dates.format(dfCOE[i, :DN], "yyyy-mm-dd"))
+                dfCOE[i, :metaphone] = string(fun.MetaPTBR(dfCOE[i, "NOME"], 20), Dates.format(dfCOE[i, :DN], "yyyy-mm-dd"))
             end
         end
 
@@ -313,7 +312,7 @@ module Principal
 
         for i = 1: nrow(dfNOT)
             if ismissing(dfNOT[i, :data_nascimento]) == false && (isa(dfNOT[i, :data_nascimento], DateTime) || isa(dfNOT[i, :data_nascimento], Date))
-                dfNOT[i, :metaphone] = string(Funções.MetaPTBR(dfNOT[i, :nome_paciente], 20), Dates.format(dfNOT[i, :data_nascimento], "yyyy-mm-dd"))
+                dfNOT[i, :metaphone] = string(fun.MetaPTBR(dfNOT[i, :nome_paciente], 20), Dates.format(dfNOT[i, :data_nascimento], "yyyy-mm-dd"))
             end
         end
         
