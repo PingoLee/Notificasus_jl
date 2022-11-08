@@ -11,6 +11,4 @@ Thumbs.db
 .vscode
 .tags*
 .tags
-
-*Project.*
-*Manifest.*
+.toml
