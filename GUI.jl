@@ -1,7 +1,7 @@
 include("Resultados_N/Principal.jl")
 include("Funções.jl")
-using Gtk
 using .Principal, .Funções	
+using Gtk
 
 win = GtkWindow("Gerenciador de notificações COVID", 400, 200)
 
